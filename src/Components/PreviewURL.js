@@ -1,10 +1,6 @@
 import React from 'react'
 import { Form, Input, Button, Message } from 'semantic-ui-react'
-
-const getURLFromRemote = async (token) => {
-  const url = await 'http://example.com'
-  return url
-}
+import { getURLFromRemote } from '../utils/request'
 
 class PreviewURL extends React.Component {
   constructor (props) {

@@ -1,39 +1,6 @@
 import React from 'react'
 import { Form, Input, Button, Message } from 'semantic-ui-react'
-
-// for demo, not for production
-const BACKEND_SERVER = 'http://127.0.0.1:12345'
-const BACKEND_SHORENURL_API = `${BACKEND_SERVER}/shortenURL`
-
-const constructShortUrl = (token) => {
-  return `${BACKEND_SERVER}/${token}`
-}
-
-const getTokenFromRemote = async (url) => {
-  try {
-    const resp = await fetch(
-      `${BACKEND_SHORENURL_API}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          url
-        })
-      }
-    )
-    const { status } = resp
-    if (status === 200) {
-      const respj = await resp.json()
-      const { token } = respj
-      return [token, status]
-    } else {
-      return ['', status]
-    }
-  } catch (e) {
-    return ['', -1]
-  }
-}
+import { constructShortUrl, getTokenFromRemote } from '../utils/request'
 
 const OkMessage = ({ shortUrl }) => {
   return (
