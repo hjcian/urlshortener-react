@@ -1,6 +1,7 @@
 import React from 'react'
-import { Form, Input, Button, Message } from 'semantic-ui-react'
+import { Form, Input, Button } from 'semantic-ui-react'
 import { getUrlFromRemote } from '../utils/request'
+import { OkMessage, ErrMessage } from '../utils/message'
 
 const EXPECTED_TOKEN_LENGTH = 5
 
@@ -16,24 +17,6 @@ const extractToken = (userInput) => {
     }
   }
   return null
-}
-
-const OkMessage = ({ msg }) => {
-  return (
-    <Message
-      info
-      content={msg}
-    />
-  )
-}
-
-const ErrMessage = ({ msg }) => {
-  return (
-    <Message
-      error
-      content={msg}
-    />
-  )
 }
 
 class PreviewURL extends React.Component {
