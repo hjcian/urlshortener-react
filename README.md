@@ -10,11 +10,12 @@ This react app provide the following interactive functionalities to you:
 ## Table of Contents
 - [URL shortener - React Demo](#url-shortener---react-demo)
   - [Table of Contents](#table-of-contents)
-  - [Running the react app](#running-the-react-app)
+  - [Usage](#usage)
     - [Install](#install)
-    - [Run](#run)
+    - [Run as development mode](#run-as-development-mode)
+    - [Build and Run as deployment mode](#build-and-run-as-deployment-mode)
 
-## Running the react app
+## Usage
 ### Install
 > System Prerequisites
 > git
@@ -27,10 +28,18 @@ cd urlshortener-react
 npm i
 ```
 
-### Run
+### Run as development mode
 > Prerequisites
-> my [back-end URL shortener system](https://github.com/hjcian/urlshortener-python) demo
+> you should run my [back-end URL shortener system](https://github.com/hjcian/urlshortener-python) demo first
 
 ```shell
 npm run start
+```
+
+### Build and Run as deployment mode
+
+```shell
+npm run build
+npm install -g serve
+serve -s build
 ```
