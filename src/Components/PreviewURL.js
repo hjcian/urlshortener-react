@@ -1,38 +1,97 @@
 import React from 'react'
 import { Form, Input, Button, Message } from 'semantic-ui-react'
-import { getURLFromRemote } from '../utils/request'
+import { getUrlFromRemote } from '../utils/request'
+
+const EXPECTED_TOKEN_LENGTH = 5
+
+const extractToken = (userInput) => {
+  if (userInput.length === EXPECTED_TOKEN_LENGTH) {
+    return userInput
+  }
+  if (userInput.startsWith('http')) {
+    const url = new URL(userInput)
+    const token = url.pathname.slice(1) // trim leading slash
+    if (token.length === EXPECTED_TOKEN_LENGTH) {
+      return token
+    }
+  }
+  return null
+}
+
+const OkMessage = ({ msg }) => {
+  return (
+    <Message
+      info
+      content={msg}
+    />
+  )
+}
+
+const ErrMessage = ({ msg }) => {
+  return (
+    <Message
+      error
+      content={msg}
+    />
+  )
+}
 
 class PreviewURL extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       shortUrl: '',
-      originalUrl: ''
+      originalUrl: '',
+      isReqOK: false,
+      errorMsg: 'Input is empty'
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   async handleSubmit (event) {
-    const originalUrl = await getURLFromRemote(this.state.shortUrl)
-    if (originalUrl !== '') {
-      this.setState({ originalUrl })
+    const token = extractToken(this.state.shortUrl)
+    if (token === null) {
+      this.setState({
+        originalUrl: '',
+        isReqOK: false,
+        errorMsg: this.state.shortUrl.length > 0 ? 'Input is invalid' : 'Input is empty'
+      })
+    } else {
+      const [originalUrl, status] = await getUrlFromRemote(token)
+      if (status === 200) {
+        this.setState({ originalUrl, isReqOK: true })
+      } else if (status === 404) {
+        this.setState({
+          originalUrl: '',
+          isReqOK: false,
+          errorMsg: 'Token not found!'
+        })
+      } else {
+        this.setState({
+          originalUrl: '',
+          isReqOK: false,
+          errorMsg: `Opps! something went wrong! (code: ${status})`
+        })
+      }
     }
   }
 
   handleInputChange (event) {
+    const input = event.target.value
     this.setState({
-      shortUrl: event.target.value
+      shortUrl: input
     })
   }
 
   render () {
-    const { shortUrl, originalUrl } = this.state
+    const { isReqOK, errorMsg, shortUrl, originalUrl } = this.state
+
     return (
       <>
-        <Form onSubmit={this.handleSubmit}>
+        <Form>
           <Input
-            placeholder='Enter Shortened URL...'
+            placeholder='Enter Shortened URL or token...'
             onChange={this.handleInputChange}
             value={shortUrl}
           />
@@ -41,9 +100,11 @@ class PreviewURL extends React.Component {
             onClick={this.handleSubmit}
           />
         </Form>
-        <Message
-          content={`Preview original URL: ${originalUrl}`}
-        />
+        {
+          isReqOK
+            ? <OkMessage msg={`Original URL is: ${originalUrl}`} />
+            : <ErrMessage msg={errorMsg} />
+        }
       </>
     )
   }

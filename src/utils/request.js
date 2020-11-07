@@ -17,8 +17,7 @@ const _request = async (api, body) => {
     const { status } = resp
     if (status === 200) {
       const respj = await resp.json()
-      const { token } = respj
-      return [token, status]
+      return [respj, status]
     } else {
       return ['', status]
     }
@@ -29,12 +28,14 @@ const _request = async (api, body) => {
 
 export const getUrlFromRemote = async (token) => {
   const body = JSON.stringify({ token })
-  return await _request(BACKEND_GETURL_API, body)
+  const [respj, status] = await _request(BACKEND_GETURL_API, body)
+  return [respj.url, status]
 }
 
 export const getTokenFromRemote = async (url) => {
   const body = JSON.stringify({ url })
-  return await _request(BACKEND_SHORTENURL_API, body)
+  const [respj, status] = await _request(BACKEND_SHORTENURL_API, body)
+  return [respj.token, status]
 }
 
 export const constructShortUrl = (token) => {
