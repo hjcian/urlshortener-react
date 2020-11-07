@@ -22,7 +22,7 @@ class ShortenURL extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      url: 'http://example.com',
+      url: '',
       shortUrl: '',
       isReqOK: false,
       errorMsg: 'Input is empty'
