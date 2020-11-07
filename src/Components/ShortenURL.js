@@ -1,46 +1,56 @@
 import React from 'react'
-import { Form, Input, Button, Message } from 'semantic-ui-react'
+import { Form, Input, Button } from 'semantic-ui-react'
 import { constructShortUrl, getTokenFromRemote } from '../utils/request'
+import { OkMessage, ErrMessage } from '../utils/message'
 
-const OkMessage = ({ shortUrl }) => {
-  return (
-    <Message
-      info
-      content={`Shortened URL: ${shortUrl}`}
-    />
-  )
-}
-
-const ErrMessage = ({ status }) => {
-  return (
-    <Message
-      error
-      content={`Error! ... status code: ${status}`}
-    />
-  )
+const isValidURL = (userInput) => {
+  try {
+    if (userInput.startsWith('http://') || userInput.startsWith('https://')) {
+      const url = new URL(userInput)
+      if (url.hostname.indexOf('.') !== -1) {
+        return true
+      }
+    }
+    return false
+  } catch (e) {
+    console.error(e)
+    return false
+  }
 }
 
 class ShortenURL extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      url: '',
+      url: 'http://example.com',
       shortUrl: '',
-      isReqOk: true,
-      status: null
+      isReqOK: false,
+      errorMsg: 'Input is empty'
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   async handleSubmit (event) {
-    // should check if valid
-    const [token, status] = await getTokenFromRemote(this.state.url)
-    if (status === 200) {
-      const shortUrl = constructShortUrl(token)
-      this.setState({ shortUrl, status, isReqOk: true })
+    const { url } = this.state
+    if (!isValidURL(url)) {
+      this.setState({
+        shortUrl: '',
+        isReqOK: false,
+        errorMsg: url.length > 0 ? 'Input is an invalid URL' : 'Input is empty'
+      })
     } else {
-      this.setState({ status, isReqOk: false })
+      const [token, status] = await getTokenFromRemote(url)
+      if (status === 200) {
+        const shortUrl = constructShortUrl(token)
+        this.setState({ shortUrl, isReqOK: true })
+      } else {
+        this.setState({
+          shortUrl: '',
+          isReqOK: false,
+          errorMsg: `Opps! something went wrong! (code: ${status})`
+        })
+      }
     }
   }
 
@@ -51,11 +61,10 @@ class ShortenURL extends React.Component {
   }
 
   render () {
-    const { url, shortUrl } = this.state
-    const { isReqOk, status } = this.state
+    const { isReqOK, errorMsg, url, shortUrl } = this.state
     return (
       <>
-        <Form onSubmit={this.handleSubmit}>
+        <Form>
           <Input
             placeholder='Enter URL...'
             onChange={this.handleInputChange}
@@ -67,9 +76,9 @@ class ShortenURL extends React.Component {
           />
         </Form>
         {
-          isReqOk
-            ? <OkMessage shortUrl={shortUrl} />
-            : <ErrMessage status={status} />
+          isReqOK
+            ? <OkMessage msg={`Shortened URL: ${shortUrl}`} />
+            : <ErrMessage msg={errorMsg} />
         }
       </>
     )
