@@ -1,6 +1,12 @@
 # URL shortener - React Demo
 This repo is an very simple react app for demonstrating the [back-end URL shortener system](https://github.com/hjcian/urlshortener-python).
 
+This react app provide the following interactive functionalities to you:
+1. **Shorten URL**
+   - this functionality provide a GUI to you for doing the URL shortening
+2. **Preview URL**
+   - this functionality take the shortened URL or token then return the original URL if exists.
+
 ## Table of Contents
 - [URL shortener - React Demo](#url-shortener---react-demo)
   - [Table of Contents](#table-of-contents)
