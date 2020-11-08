@@ -18,9 +18,9 @@ This react app provide the following interactive functionalities to you:
 ## Usage
 ### Install
 > System Prerequisites
-> git
-> node v10 or latter (developed on v10.22.0)
-> npm 6 or latter (developed on 6.14.6)
+> - git
+> - node v10 or latter (developed on v10.22.0)
+> - npm 6 or latter (developed on 6.14.6)
 
 ```shell
 git clone https://github.com/hjcian/urlshortener-react
@@ -30,11 +30,12 @@ npm i
 
 ### Run as development mode
 > Prerequisites
-> you should run my [back-end URL shortener system](https://github.com/hjcian/urlshortener-python) demo first
+> - you should run my [back-end URL shortener system](https://github.com/hjcian/urlshortener-python) demo first
 
 ```shell
 npm run start
 ```
+app will run on **localhost:3000** by default
 
 ### Build and Run as deployment mode
 
@@ -43,3 +44,4 @@ npm run build
 npm install -g serve
 serve -s build
 ```
+app will run on **localhost:5000** by default
